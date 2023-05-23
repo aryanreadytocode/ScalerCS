@@ -1,26 +1,35 @@
 package ProducerConsumer;
 
-import javax.management.ObjectName;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Semaphore;
 
-public class Consumer implements Runnable{
+public class Consumer implements Runnable {
     int cap;
-    Queue<Object>  cars;
+    Queue<Object> cars;
+    Semaphore cs;
+    Semaphore pps;
 
-    Consumer(Queue<Object>  cars, int cap) {
+    Consumer(Queue<Object> cars, int cap, Semaphore cs, Semaphore pps) {
         this.cap = cap;
         this.cars = cars;
+        this.cs = cs;
+        this.pps = pps;
     }
+
     @Override
     public void run() {
         while (true) {
-            synchronized (cars) {
-                if (cars.size() > 0)
-                    cars.remove();
-                System.out.println("Car size: "+cars.size());
+            try {
+                cs.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+//            synchronized (cars) {
+            if (cars.size() > 0)
+                cars.remove();
+            pps.release();
+            System.out.println("Car size: " + cars.size());
+//            }
         }
     }
 }

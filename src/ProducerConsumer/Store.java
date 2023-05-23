@@ -2,6 +2,7 @@ package ProducerConsumer;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Semaphore;
 
 public class Store {
 
@@ -9,22 +10,27 @@ public class Store {
 
 
         Queue<Object> cars = new ConcurrentLinkedDeque<>();
-        Producer p1 = new Producer(cars, 6);
-        Producer p2 = new Producer(cars, 6);
-        Producer p3 = new Producer(cars, 6);
-        Producer p4 = new Producer(cars, 6);
-        Producer p5 = new Producer(cars, 6);
-        Producer p6 = new Producer(cars, 6);
-        Producer p7 = new Producer(cars, 6);
-        Producer p8 = new Producer(cars, 6);
 
-        Consumer c1 = new Consumer(cars, 6);
-        Consumer c2 = new Consumer(cars, 6);
-        Consumer c3 = new Consumer(cars, 6);
-        Consumer c4 = new Consumer(cars, 6);
-        Consumer c5 = new Consumer(cars, 6);
-        Consumer c6 = new Consumer(cars, 6);
-        Consumer c7 = new Consumer(cars, 6);
+        Semaphore pps = new Semaphore(6);
+        Semaphore cs = new Semaphore(0);
+
+
+        Producer p1 = new Producer(cars, 6, pps, cs);
+        Producer p2 = new Producer(cars, 6, pps, cs);
+        Producer p3 = new Producer(cars, 6, pps, cs);
+        Producer p4 = new Producer(cars, 6, pps, cs);
+        Producer p5 = new Producer(cars, 6, pps, cs);
+        Producer p6 = new Producer(cars, 6, pps, cs);
+        Producer p7 = new Producer(cars, 6, pps, cs);
+        Producer p8 = new Producer(cars, 6, pps, cs);
+
+        Consumer c1 = new Consumer(cars, 6, cs, pps);
+        Consumer c2 = new Consumer(cars, 6, cs, pps);
+        Consumer c3 = new Consumer(cars, 6, cs, pps);
+        Consumer c4 = new Consumer(cars, 6, cs, pps);
+        Consumer c5 = new Consumer(cars, 6, cs, pps);
+        Consumer c6 = new Consumer(cars, 6, cs, pps);
+        Consumer c7 = new Consumer(cars, 6, cs, pps);
 
         Thread tp1 = new Thread(p1);
         Thread tp2 = new Thread(p2);
